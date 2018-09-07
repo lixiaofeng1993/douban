@@ -35,7 +35,7 @@ class MovieSpiderSpider(CrawlSpider):
 
     def __init__(self, *args, **kwargs):
         super(MovieSpiderSpider, self).__init__(*args, **kwargs)
-        self.driver = webdriver.PhantomJS(executable_path=r'/usr/local/phantomjs/bin/phantomjs')
+        self.driver = webdriver.PhantomJS(executable_path=r'D:\phantomjs-2.1.1-windows\bin\phantomjs.exe')
 
     def __del__(self):
         self.driver.close()
@@ -57,8 +57,8 @@ class MovieSpiderSpider(CrawlSpider):
                 url_list.remove(i)
         # 电影id
         item['movieId'] = url_list[-1]
-        # info_website = 'http://localhost:8888/movie/{}/'.format(item['movieId'])
-        info_website = 'http://longlove.wang/movie/{}/'.format(item['movieId'])
+        info_website = 'http://localhost:8000/movie/{}/'.format(item['movieId'])
+        # info_website = 'http://longlove.wang/movie/{}/'.format(item['movieId'])
         # 电影信息网址
         item['info_website'] = info_website
         movie_introduction = response.xpath('//*[@id="link-report"]/span[1]/text()').extract()
@@ -84,8 +84,8 @@ class MovieSpiderSpider(CrawlSpider):
         for i in data_score:
             item['data_score'] = i.strip()
         douban_url = 'https://movie.douban.com/subject/{}/comments'.format(item['movieId'])
-        # comment_url = 'http://localhost:8888/movie/{}/comments'.format(item['movieId'])
-        comment_url = 'http://longlove.wang/movie/{}/comments'.format(item['movieId'])
+        comment_url = 'http://localhost:8000/movie/{}/comments'.format(item['movieId'])
+        # comment_url = 'http://longlove.wang/movie/{}/comments'.format(item['movieId'])
         request = scrapy.Request(douban_url, callback=self.parse_comment)
         # 短评网址
         item['comment_website'] = comment_url
@@ -109,9 +109,9 @@ class MovieSpiderSpider(CrawlSpider):
         # 差评
         item_comment['negative_rate'] = response.xpath('//*[@id="content"]/div/div[1]/div[3]/label[4]/span[2]/text()').extract()
         info = response.xpath('//*[@id="comments"]')[0]
-        # 短评内容
-        item_comment['content'] = info.xpath('./div/div[@class="comment"]/p/text()').extract()
-        content_list = info.xpath('./div/div[@class="comment"]/p/text()').extract()
+        # 短评内容  //*[@id="comments"]/div[1]/div[2]/p/span/text()
+        # item_comment['content'] = info.xpath('./div/div[@class="comment"]/p/span/text()').extract()
+        content_list = info.xpath('./div/div[@class="comment"]/p/span/text()').extract()
         content_format = []
         for content in content_list:
             content = content.strip().replace('\n', '').replace('\t', '')

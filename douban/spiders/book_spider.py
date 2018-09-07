@@ -37,7 +37,7 @@ class BookSpiderSpider(CrawlSpider):
 
     def __init__(self, *args, **kwargs):
         super(BookSpiderSpider, self).__init__(*args, **kwargs)
-        self.driver = webdriver.PhantomJS()
+        self.driver = webdriver.PhantomJS(executable_path=r'D:\phantomjs-2.1.1-windows\bin\phantomjs.exe')
 
     def __del__(self):
         self.driver.close()
@@ -65,8 +65,8 @@ class BookSpiderSpider(CrawlSpider):
         # 书籍简介
         item['introduction'] = introduction
         # 书籍信息网址
-        book_info_website = 'http://longlove.wang/book/{}/'.format(item['book_id'])
-        # book_info_website = 'http://localhost:8888/book/{}/'.format(item['book_id'])
+        # book_info_website = 'http://longlove.wang/book/{}/'.format(item['book_id'])
+        book_info_website = 'http://localhost:8000/book/{}/'.format(item['book_id'])
         item['book_info_website'] = book_info_website
         # 书籍名称
         item['book_name'] = response.xpath('//*[@id="wrapper"]/h1/span/text()').extract()
@@ -77,8 +77,8 @@ class BookSpiderSpider(CrawlSpider):
         for i in book_score:
             item['book_score'] = i.strip()
         douban_url = 'https://book.douban.com/subject/{}/comments/'.format(item['book_id'])
-        comment_url = 'http://longlove.wang/book/{}/comments'.format(item['book_id'])
-        # comment_url = 'http://localhost:8888/book/{}/comments'.format(item['book_id'])
+        # comment_url = 'http://longlove.wang/book/{}/comments'.format(item['book_id'])
+        comment_url = 'http://localhost:8000/book/{}/comments'.format(item['book_id'])
         # 书籍短评网址
         item['book_comment_website'] = comment_url
         request = scrapy.Request(douban_url, callback=self.parse_comment)
@@ -98,7 +98,7 @@ class BookSpiderSpider(CrawlSpider):
         item_comment = BookCommentItem()
         info = response.xpath('//*[@id="comments"]')[0]
         # 短评内容
-        content_list = info.xpath('./ul/li/div[2]/p/text()').extract()
+        content_list = info.xpath('./ul/li/div[2]/p/span/text()').extract()
         content_format = []
         for content in content_list:
             content = content.strip().replace('\n', '').replace('\t', '').replace('\r', '')

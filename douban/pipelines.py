@@ -12,7 +12,6 @@ from scrapy import log
 
 
 class DoubanPipeline(object):
-
     def __init__(self):
         self.check = 0
 
@@ -103,7 +102,6 @@ class RedisPipeline(object):
 
 
 class MysqlPipeline(object):
-
     def __init__(self):
         """"初始化mysql链接和游标对象"""
         self.conn = None
@@ -173,7 +171,8 @@ class MysqlPipeline(object):
                 self.cur.execute(sql, (item['movieName'], item['movieId'], item['img'], item['info_website'],
                                        item['data_score'], item['data_duration'], item['data_release'],
                                        item['data_director'], item['data_actors'], item['data_region'],
-                                       item['data_attrs'], item['data_number'], item['introduction'], item['movie_type'],
+                                       item['data_attrs'], item['data_number'], item['introduction'],
+                                       item['movie_type'],
                                        item['movie_language'], item['also_called'], item['movie_ranking'],
                                        item['comment_website']))
                 self.conn.commit()
@@ -194,9 +193,10 @@ class MysqlPipeline(object):
                     sql = 'insert into `movie_home`(`movieName`, `movieId`, `praise_rate`,`general_rate`,' \
                           '`negative_rate`, `comment_website`, `img`, `info_website`) values ' \
                           '(%s, %s, %s, %s, %s, %s, %s, %s)'
-                    self.cur.execute(sql, (item['movieName'], item['movieId'], item['praise_rate'], item['general_rate'],
-                                           item['negative_rate'], item['comment_website'], item['img'],
-                                           item['info_website']))
+                    self.cur.execute(sql,
+                                     (item['movieName'], item['movieId'], item['praise_rate'], item['general_rate'],
+                                      item['negative_rate'], item['comment_website'], item['img'],
+                                      item['info_website']))
                 self.conn.commit()
                 log.msg('movie_comment, movie_home  {},保存成功!'.format(item['movieName']))
                 return item
@@ -211,7 +211,8 @@ class MysqlPipeline(object):
                 self.cur.execute(sql, (item['book_name'], item['book_id'], item['img'], item['book_author'],
                                        item['book_press'], item['book_party'], item['book_original_name'],
                                        item['book_translator'], item['book_publication'], item['book_number'],
-                                       item['book_price'], item['book_binding'], item['book_series'], item['book_score'],
+                                       item['book_price'], item['book_binding'], item['book_series'],
+                                       item['book_score'],
                                        item['book_info_website'], item['book_comment_website'], item['data_number'],
                                        item['introduction']))
                 self.conn.commit()
@@ -231,8 +232,9 @@ class MysqlPipeline(object):
                 if int(item['book_id']) not in id_list:
                     sql = 'insert into `book_home`(`book_name`, `book_id`, `book_comment_website`, `img`, ' \
                           '`book_info_website`) values (%s, %s, %s, %s, %s)'
-                    self.cur.execute(sql, (item['book_name'], item['book_id'], item['book_comment_website'], item['img'],
-                                           item['book_info_website']))
+                    self.cur.execute(sql,
+                                     (item['book_name'], item['book_id'], item['book_comment_website'], item['img'],
+                                      item['book_info_website']))
                 self.conn.commit()
                 log.msg('book_comment, book_home  {},保存成功!'.format(item['book_name']))
                 return item

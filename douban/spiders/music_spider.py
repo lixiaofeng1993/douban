@@ -37,7 +37,7 @@ class MusicSpiderSpider(CrawlSpider):
 
     def __init__(self, *args, **kwargs):
         super(MusicSpiderSpider, self).__init__(*args, **kwargs)
-        self.driver = webdriver.PhantomJS(executable_path=r'/usr/local/phantomjs/bin/phantomjs')
+        self.driver = webdriver.PhantomJS(executable_path=r'D:\phantomjs-2.1.1-windows\bin\phantomjs.exe')
 
     def __del__(self):
         self.driver.close()
@@ -81,13 +81,13 @@ class MusicSpiderSpider(CrawlSpider):
         # 曲目
         item['song'] = songs
         # 音乐信息网址
-        music_info_website = 'http://longlove.wang/music/{}/'.format(item['music_id'])
-        # music_info_website = 'http://localhost:8888/music/{}/'.format(item['music_id'])
+        # music_info_website = 'http://longlove.wang/music/{}/'.format(item['music_id'])
+        music_info_website = 'http://localhost:8000/music/{}/'.format(item['music_id'])
         item['music_info_website'] = music_info_website
         # 音乐短评网址
         douban_url = 'https://music.douban.com/subject/{}/comments/'.format(item['music_id'])
-        comment_url = 'http://longlove.wang/music/{}/comments'.format(item['music_id'])
-        # comment_url = 'http://localhost:8888/music/{}/comments'.format(item['music_id'])
+        # comment_url = 'http://longlove.wang/music/{}/comments'.format(item['music_id'])
+        comment_url = 'http://localhost:8000/music/{}/comments'.format(item['music_id'])
         item['music_comment_website'] = comment_url
         request = scrapy.Request(douban_url, callback=self.parse_comment)
         # 标记
@@ -106,7 +106,7 @@ class MusicSpiderSpider(CrawlSpider):
         item_comment = MusicCommentItem()
         info = response.xpath('//*[@id="comments"]')[0]
         # 短评内容
-        content_list = info.xpath('./ul/li/div[2]/p/text()').extract()
+        content_list = info.xpath('./ul/li/div[2]/p/span/text()').extract()
         content_format = []
         for content in content_list:
             content = content.strip().replace('\n', '').replace('\t', '').replace('\r', '')
